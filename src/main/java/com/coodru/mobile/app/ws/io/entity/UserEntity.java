@@ -23,8 +23,11 @@ import java.io.Serializable;
 	@Column(nullable = false, length = 50)
 	private String lastName;
 
-	// every user will have a unique email address
-	@Column(nullable = false, length = 120, unique = true)
+	/* every user will have a unique email address
+	   we can use this "unique" propriety, or use findByEmail method, declared in UserRepository
+	**/
+//	@Column(nullable = false, length = 120, unique = true)
+	@Column(nullable = false, length = 120)
 	private String email;
 
 	@Column(nullable = false)
