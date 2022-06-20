@@ -6,6 +6,7 @@ import com.coodru.mobile.app.ws.service.UserService;
 import com.coodru.mobile.app.ws.shared.Utils;
 import com.coodru.mobile.app.ws.shared.dto.UserDto;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,10 +14,12 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final Utils utils;
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	public UserServiceImpl(UserRepository userRepository, Utils utils) {
+	public UserServiceImpl(UserRepository userRepository, Utils utils, BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.userRepository = userRepository;
 		this.utils = utils;
+		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 
 	@Override public UserDto createUser(UserDto user) {
@@ -29,7 +32,10 @@ public class UserServiceImpl implements UserService {
 		BeanUtils.copyProperties(user, userEntity);
 
 		String publicUserId = utils.generateUserId(25);
-		userEntity.setEncryptedPassword("P@ssW0rd");
+		userEntity.setUserId(publicUserId);
+
+		// This is how the password was encrypted before it's stored in the DB
+		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		userEntity.setUserId(publicUserId);
 
 		UserEntity storedUserDetails = userRepository.save(userEntity);
