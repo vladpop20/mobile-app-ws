@@ -4,6 +4,7 @@ import com.coodru.mobile.app.ws.ui.controller.model.request.UserLoginRequestMode
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,9 +24,7 @@ import java.util.Date;
 /*
 	This filter will be used when an HTTP Request is sent for user to sign-in, into the application
  */
-
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-
 
 	private final AuthenticationManager authenticationManager;
 
@@ -70,6 +69,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 		response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
 
-		super.successfulAuthentication(request, response, chain, authResult);
+//		super.successfulAuthentication(request, response, chain, authResult);
 	}
 }
