@@ -6,8 +6,13 @@ import com.coodru.mobile.app.ws.service.UserService;
 import com.coodru.mobile.app.ws.shared.Utils;
 import com.coodru.mobile.app.ws.shared.dto.UserDto;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -22,7 +27,8 @@ public class UserServiceImpl implements UserService {
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 
-	@Override public UserDto createUser(UserDto user) {
+	@Override
+	public UserDto createUser(UserDto user) {
 
 		if(userRepository.findByEmail(user.getEmail()) != null) {
 			throw new RuntimeException("Record already exists");
@@ -44,5 +50,19 @@ public class UserServiceImpl implements UserService {
 		BeanUtils.copyProperties(storedUserDetails, returnValue);
 
 		return returnValue;
+	}
+
+	/*	This method is used by Spring, to load a user from DB, using in this case, it's email
+		and this method will be used in the process of user Sign-in
+	*/
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		UserEntity user = userRepository.findByEmail(email);
+
+		if(user == null) {
+			throw new UsernameNotFoundException(email);
+		}
+
+		return new User(user.getEmail(), user.getEncryptedPassword(), new ArrayList<>());
 	}
 }
