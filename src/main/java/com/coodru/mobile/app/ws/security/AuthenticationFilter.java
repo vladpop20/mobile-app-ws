@@ -1,5 +1,8 @@
 package com.coodru.mobile.app.ws.security;
 
+import com.coodru.mobile.app.ws.SpringApplicationContext;
+import com.coodru.mobile.app.ws.service.UserService;
+import com.coodru.mobile.app.ws.shared.dto.UserDto;
 import com.coodru.mobile.app.ws.ui.controller.model.request.UserLoginRequestModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
@@ -65,8 +68,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 				.signWith(SignatureAlgorithm.HS512, SecurityConstants.TOKEN_SECRET)
 				.compact();
 
-		response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+		UserService userService = (UserService) SpringApplicationContext.getBean("userServiceImpl");
+		UserDto userDto = userService.getUser(userName);
 
-//		super.successfulAuthentication(request, response, chain, authResult);
+		response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+		response.addHeader("UserID", userDto.getUserId());
 	}
 }

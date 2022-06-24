@@ -28,15 +28,13 @@ public class SecurityConfig {
 
 		http.csrf().disable().authorizeRequests()
 				.antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
-//				.anyRequest().authenticated().and().addFilter(new AuthenticationFilter());
-				.anyRequest().authenticated().and().addFilter(new AuthenticationFilter(authenticationManager()));
+				.anyRequest().authenticated().and().addFilter(getAuthenticationFilter());
 
 		return http.build();
 	}
 
 
 	@Bean
-//	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
 	public AuthenticationManager authenticationManager() throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
@@ -44,5 +42,11 @@ public class SecurityConfig {
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	public AuthenticationFilter getAuthenticationFilter() throws Exception {
+		final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
+		filter.setFilterProcessesUrl("/users/login");
+		return filter;
 	}
 }
