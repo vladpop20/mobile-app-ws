@@ -46,8 +46,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 			UserLoginRequestModel credentials = new ObjectMapper().readValue(request.getInputStream(), UserLoginRequestModel.class);
 
 			/*
-			Here the authenticationManager will look up for a User, in the DB, and for that we implemented the method:  loadUserByUsername()
-			in UserServiceImpl. Will authenticate the user, using username and password.
+			Here the authenticationManager will look up for a User, in the DB, and for that we implemented
+			the method:  loadUserByUsername() in UserServiceImpl.
+			Will authenticate the user, using username and password.
 			If the username and password, match the record that we have, then the next method from this call, will be called
 			 */
 			return authenticationManager.authenticate(
