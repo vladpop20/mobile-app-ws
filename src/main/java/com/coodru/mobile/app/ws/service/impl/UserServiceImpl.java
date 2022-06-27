@@ -64,6 +64,17 @@ public class UserServiceImpl implements UserService {
 		return returnValue;
 	}
 
+	@Override public UserDto getUserByUserId(String userId) {
+		UserDto returnValue = new UserDto();
+		UserEntity user = userRepository.findByUserId(userId);
+
+		if(user == null) {
+			throw new UsernameNotFoundException(userId);
+		}
+
+		BeanUtils.copyProperties(user, returnValue);
+		return returnValue;
+	}
 
 	/*	This method is used by Spring, to load a user from DB, using in this case, it's email
 		and this method will be used in the process of user Sign-in
