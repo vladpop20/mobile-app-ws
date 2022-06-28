@@ -76,6 +76,10 @@ public class UserServiceImpl implements UserService {
 		return returnValue;
 	}
 
+	@Override public UserDto updateUser(String id, UserDto userDto) {
+		return null;
+	}
+
 	/*	This method is used by Spring, to load a user from DB, using in this case, it's email
 		and this method will be used in the process of user Sign-in
 	*/
