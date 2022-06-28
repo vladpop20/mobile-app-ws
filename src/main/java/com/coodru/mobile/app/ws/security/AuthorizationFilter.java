@@ -24,6 +24,8 @@ E.g:
 	UserID -> lmvrm75to8vyayNn7tqtjcvsq
 
 Those 2 parameters, will be used by this class (AuthorizationFilter), in order to execute any operations on some future endpoint.
+
+AuthorizationFilter class that will be used to validate the provided Authorization JWT.
  */
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 

@@ -31,7 +31,9 @@ public class SecurityConfig {
 				.authorizeRequests()
 				.antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
 				.anyRequest().authenticated().and()
+				// User Authentication with custom login URL path
 				.addFilter(getAuthenticationFilter())
+				// User Authorization with JWT
 				.addFilter(new AuthorizationFilter(authenticationManager()))
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
