@@ -1,5 +1,6 @@
 package com.coodru.mobile.app.ws.ui.controller;
 
+import com.coodru.mobile.app.ws.exceptions.UserServiceException;
 import com.coodru.mobile.app.ws.service.UserService;
 import com.coodru.mobile.app.ws.shared.dto.UserDto;
 import com.coodru.mobile.app.ws.ui.controller.model.request.UserDetailsRequestModel;
@@ -37,7 +38,7 @@ public class UserController {
 		UserRest returnValue = new UserRest();
 
 		if (userDetails.getFirstName().isEmpty()){
-			throw new Exception(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
+			throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 		}
 
 		UserDto userDto = new UserDto();
