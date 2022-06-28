@@ -3,6 +3,7 @@ package com.coodru.mobile.app.ws.ui.controller;
 import com.coodru.mobile.app.ws.service.UserService;
 import com.coodru.mobile.app.ws.shared.dto.UserDto;
 import com.coodru.mobile.app.ws.ui.controller.model.request.UserDetailsRequestModel;
+import com.coodru.mobile.app.ws.ui.controller.model.response.ErrorMessages;
 import com.coodru.mobile.app.ws.ui.controller.model.response.UserRest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
@@ -30,9 +31,14 @@ public class UserController {
 		return returnValue;
 	}
 
-	@PostMapping
-	public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
+	@PostMapping(consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
+			produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+	public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception {
 		UserRest returnValue = new UserRest();
+
+		if (userDetails.getFirstName().isEmpty()){
+			throw new Exception(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
+		}
 
 		UserDto userDto = new UserDto();
 		BeanUtils.copyProperties(userDetails, userDto);
