@@ -1,10 +1,11 @@
 package com.coodru.mobile.app.ws.ui.controller;
 
-import com.coodru.mobile.app.ws.exceptions.UserServiceException;
 import com.coodru.mobile.app.ws.service.UserService;
+import com.coodru.mobile.app.ws.shared.RequestOperationName;
+import com.coodru.mobile.app.ws.shared.RequestOperationStatus;
 import com.coodru.mobile.app.ws.shared.dto.UserDto;
 import com.coodru.mobile.app.ws.ui.controller.model.request.UserDetailsRequestModel;
-import com.coodru.mobile.app.ws.ui.controller.model.response.ErrorMessages;
+import com.coodru.mobile.app.ws.ui.controller.model.response.OperationStatusModel;
 import com.coodru.mobile.app.ws.ui.controller.model.response.UserRest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
@@ -65,8 +66,15 @@ public class UserController {
 		return returnValue;
 	}
 
-	@DeleteMapping
-	public String deleteUser() {
-		return "delete method was called";
+	@DeleteMapping(path = "/{id}",
+			produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+	public OperationStatusModel deleteUser(@PathVariable String id) {
+		OperationStatusModel returnValue = new OperationStatusModel();
+
+		userService.deleteUser(id);
+
+		returnValue.setOperationName(RequestOperationName.DELETE.name());
+		returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+		return returnValue;
 	}
 }

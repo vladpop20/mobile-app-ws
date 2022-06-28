@@ -5,7 +5,7 @@ import com.coodru.mobile.app.ws.io.repository.UserRepository;
 import com.coodru.mobile.app.ws.service.UserService;
 import com.coodru.mobile.app.ws.shared.Utils;
 import com.coodru.mobile.app.ws.shared.dto.UserDto;
-import com.coodru.mobile.app.ws.ui.controller.model.response.ErrorMessages;
+import com.coodru.mobile.app.ws.shared.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
 		UserEntity user = userRepository.findByUserId(userId);
 
 		if(user == null) {
-			throw new UsernameNotFoundException(userId);
+			throw new UsernameNotFoundException("User with ID: " + userId + " not found!");
 		}
 
 		BeanUtils.copyProperties(user, returnValue);
@@ -92,6 +92,16 @@ public class UserServiceImpl implements UserService {
 
 		BeanUtils.copyProperties(userEntity, returnValue);
 		return returnValue;
+	}
+
+	@Override public void deleteUser(String userId) {
+		UserEntity userEntity = userRepository.findByUserId(userId);
+
+		if(userEntity == null) {
+			throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		}
+
+		userRepository.delete(userEntity);
 	}
 
 	/*	This method is used by Spring, to load a user from DB, using in this case, it's email

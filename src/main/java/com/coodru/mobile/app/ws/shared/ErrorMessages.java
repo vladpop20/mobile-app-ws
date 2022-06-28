@@ -1,4 +1,4 @@
-package com.coodru.mobile.app.ws.ui.controller.model.response;
+package com.coodru.mobile.app.ws.shared;
 
 public enum ErrorMessages {
 	MISSING_REQUIRED_FIELD("Missing required field. Please check documentation for required fields"),
