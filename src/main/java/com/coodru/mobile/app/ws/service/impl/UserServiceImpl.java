@@ -1,9 +1,11 @@
 package com.coodru.mobile.app.ws.service.impl;
+import com.coodru.mobile.app.ws.exceptions.UserServiceException;
 import com.coodru.mobile.app.ws.io.entity.UserEntity;
 import com.coodru.mobile.app.ws.io.repository.UserRepository;
 import com.coodru.mobile.app.ws.service.UserService;
 import com.coodru.mobile.app.ws.shared.Utils;
 import com.coodru.mobile.app.ws.shared.dto.UserDto;
+import com.coodru.mobile.app.ws.ui.controller.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -76,8 +78,20 @@ public class UserServiceImpl implements UserService {
 		return returnValue;
 	}
 
-	@Override public UserDto updateUser(String id, UserDto userDto) {
-		return null;
+	@Override public UserDto updateUser(String userId, UserDto user) {
+		UserDto returnValue = new UserDto();
+		UserEntity userEntity = userRepository.findByUserId(userId);
+
+		if(userEntity == null) {
+			throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		}
+
+		userEntity.setFirstName(user.getFirstName());
+		userEntity.setLastName(user.getLastName());
+		userRepository.save(userEntity);
+
+		BeanUtils.copyProperties(userEntity, returnValue);
+		return returnValue;
 	}
 
 	/*	This method is used by Spring, to load a user from DB, using in this case, it's email
