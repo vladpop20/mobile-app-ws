@@ -5,6 +5,7 @@ import com.coodru.mobile.app.ws.shared.dto.UserDto;
 import com.coodru.mobile.app.ws.ui.controller.model.request.UserDetailsRequestModel;
 import com.coodru.mobile.app.ws.ui.controller.model.response.UserRest;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,7 +18,7 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@GetMapping(path = "/{id}")
+	@GetMapping(path = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
 	public UserRest getUser(@PathVariable String id)	{
 		UserRest returnValue = new UserRest();
 
