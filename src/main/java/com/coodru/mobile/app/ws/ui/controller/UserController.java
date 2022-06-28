@@ -11,6 +11,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "users")
 public class UserController {
@@ -21,9 +24,25 @@ public class UserController {
 		this.userService = userService;
 	}
 
+	@GetMapping(produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+	public List<UserRest> getUsers(@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "limit", defaultValue = "25") int limit) {
+
+		List<UserRest> returnList = new ArrayList<>();
+		List<UserDto> users = userService.getUsers(page, limit);
+
+		users.forEach(userDto -> {
+			UserRest userModel = new UserRest();
+			BeanUtils.copyProperties(userDto, userModel);
+			returnList.add(userModel);
+		});
+
+		return returnList;
+	}
+
 	// The default representation for response to be produced, is first in order, that means XML mediaType
-	@GetMapping(path = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE,
-			MediaType.APPLICATION_JSON_VALUE })
+	@GetMapping(path = "/{id}",
+			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public UserRest getUser(@PathVariable String id)	{
 		UserRest returnValue = new UserRest();
 

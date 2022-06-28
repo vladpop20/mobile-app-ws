@@ -6,7 +6,11 @@ import com.coodru.mobile.app.ws.service.UserService;
 import com.coodru.mobile.app.ws.shared.Utils;
 import com.coodru.mobile.app.ws.shared.dto.UserDto;
 import com.coodru.mobile.app.ws.shared.ErrorMessages;
+import com.coodru.mobile.app.ws.ui.controller.model.response.UserRest;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -102,6 +107,23 @@ public class UserServiceImpl implements UserService {
 		}
 
 		userRepository.delete(userEntity);
+	}
+
+	@Override public List<UserDto> getUsers(int page, int limit) {
+		List<UserDto> returnList = new ArrayList<>();
+
+		Pageable pageableRequest = PageRequest.of(page, limit);
+
+		Page<UserEntity> userPage = userRepository.findAll(pageableRequest);
+		List<UserEntity> users = userPage.getContent();
+
+		users.forEach(user -> {
+			UserDto userDto = new UserDto();
+			BeanUtils.copyProperties(user, userDto);
+			returnList.add(userDto);
+		});
+
+		return returnList;
 	}
 
 	/*	This method is used by Spring, to load a user from DB, using in this case, it's email
