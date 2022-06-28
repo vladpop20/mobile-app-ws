@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDto createUser(UserDto user) {
 
+		// This is how we make sure that the email is UNIQUE, or we can do it directly in UserEntity
 		if(userRepository.findByEmail(user.getEmail()) != null) {
 			throw new RuntimeException("Record already exists");
 		}
