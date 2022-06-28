@@ -18,7 +18,9 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@GetMapping(path = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+	// The default representation for response to be produced, is first in order, that means XML mediaType
+	@GetMapping(path = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE,
+			MediaType.APPLICATION_JSON_VALUE })
 	public UserRest getUser(@PathVariable String id)	{
 		UserRest returnValue = new UserRest();
 
