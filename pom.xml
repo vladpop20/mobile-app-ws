@@ -61,9 +61,18 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
 <!--        This means that the dependency of server Apache Tomcat, will be provided at the runtime and not at compile-time
             From now on, the deployed app, will not set/configure a predefined server of Apache Tomcat,
-            but use another one, that is not compiled with the JAR-->
+            but use another one, that is not compiled with the JAR
+            So when deployed, the compiled app will not include any Tomcat server predefined. That means that one should be provided
+            by outside.
+            Also check in main class, that in order to work, Main - now extends SpringBootServletInitializer, and override Configure method-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
@@ -71,10 +80,11 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>3.0.0</version>
         </dependency>
+
     </dependencies>
 
     <build>

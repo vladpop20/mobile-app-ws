@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 		UserEntity userEntity = new UserEntity();
 		BeanUtils.copyProperties(user, userEntity);
 
-		String publicUserId = utils.generateUserId(25);
+		String publicUserId = utils.generateId(25);
 		userEntity.setUserId(publicUserId);
 
 		// This is how the password was encrypted before it's stored in the DB

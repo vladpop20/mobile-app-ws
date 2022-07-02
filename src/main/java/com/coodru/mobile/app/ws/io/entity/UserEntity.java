@@ -1,11 +1,9 @@
 package com.coodru.mobile.app.ws.io.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity(name = "users") public class UserEntity implements Serializable {
 
@@ -37,6 +35,10 @@ import java.io.Serializable;
 
 	@Column(nullable = false)	// this boolean propriety will be required, but also default false
 	private Boolean emailVerificationStatus = false;
+
+	@OneToMany(mappedBy = "userDetails", cascade = CascadeType.ALL)
+	private List<AddressEntity> addresses;
+
 
 	public long getId() {
 		return id;
@@ -101,5 +103,13 @@ import java.io.Serializable;
 
 	public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
 		this.emailVerificationStatus = emailVerificationStatus;
+	}
+
+	public List<AddressEntity> getAddresses() {
+		return addresses;
+	}
+
+	public void setAddresses(List<AddressEntity> addresses) {
+		this.addresses = addresses;
 	}
 }
