@@ -1,6 +1,6 @@
 package com.coodru.mobile.app.ws.ui.controller.model.response;
 
-public class AddressesRest {
+public class AddressRest {
 
 	private String addressId;
 

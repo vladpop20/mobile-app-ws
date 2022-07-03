@@ -7,7 +7,7 @@ import com.coodru.mobile.app.ws.shared.RequestOperationStatus;
 import com.coodru.mobile.app.ws.shared.dto.AddressDto;
 import com.coodru.mobile.app.ws.shared.dto.UserDto;
 import com.coodru.mobile.app.ws.ui.controller.model.request.UserDetailsRequestModel;
-import com.coodru.mobile.app.ws.ui.controller.model.response.AddressesRest;
+import com.coodru.mobile.app.ws.ui.controller.model.response.AddressRest;
 import com.coodru.mobile.app.ws.ui.controller.model.response.OperationStatusModel;
 import com.coodru.mobile.app.ws.ui.controller.model.response.UserRest;
 import org.modelmapper.ModelMapper;
@@ -106,13 +106,13 @@ public class UserController {
 
 	@GetMapping(path = "/{id}/addresses",
 			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	public List<AddressesRest> getUserAddresses(@PathVariable String id) {
-		List<AddressesRest> returnValue = new ArrayList<>();
+	public List<AddressRest> getUserAddresses(@PathVariable String id) {
+		List<AddressRest> returnValue = new ArrayList<>();
 
 		List<AddressDto> addressesDto = addressService.getAddresses(id);
 
 		if (addressesDto != null && !addressesDto.isEmpty()) {
-			Type listType = new TypeToken<List<AddressesRest>>() {}.getType();
+			Type listType = new TypeToken<List<AddressRest>>() {}.getType();
 			returnValue = new ModelMapper().map(addressesDto, listType);
 		}
 
@@ -121,10 +121,11 @@ public class UserController {
 
 	@GetMapping(path = "/{id}/addresses/{addressId}",
 			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	public AddressesRest getUserAddress(@PathVariable String id, @PathVariable String addressId) {
+	public AddressRest getUserAddress(@PathVariable String addressId) {
+//		@PathVariable String id
 
+		AddressDto addressDto = addressService.getAddress(addressId);
 
-
-		return null;
+		return new ModelMapper().map(addressDto, AddressRest.class);
 	}
 }
