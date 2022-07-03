@@ -5,7 +5,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-@Entity(name = "users") public class UserEntity implements Serializable {
+@Entity(name = "users")
+public class UserEntity implements Serializable {
 
 	@Serial private static final long serialVersionUID = -7893558128167221491L;
 
@@ -79,7 +80,6 @@ import java.util.List;
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
 
 	public String getEncryptedPassword() {
 		return encryptedPassword;

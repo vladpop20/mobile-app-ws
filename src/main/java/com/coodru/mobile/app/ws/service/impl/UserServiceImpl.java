@@ -4,9 +4,11 @@ import com.coodru.mobile.app.ws.io.entity.UserEntity;
 import com.coodru.mobile.app.ws.io.repository.UserRepository;
 import com.coodru.mobile.app.ws.service.UserService;
 import com.coodru.mobile.app.ws.shared.Utils;
+import com.coodru.mobile.app.ws.shared.dto.AddressDto;
 import com.coodru.mobile.app.ws.shared.dto.UserDto;
 import com.coodru.mobile.app.ws.shared.ErrorMessages;
 import com.coodru.mobile.app.ws.ui.controller.model.response.UserRest;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,29 +36,30 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto createUser(UserDto user) {
+	public UserDto createUser(UserDto userDto) {
 
 		// This is how we make sure that the email is UNIQUE, or we can do it directly in UserEntity
-		if(userRepository.findByEmail(user.getEmail()) != null) {
+		if(userRepository.findByEmail(userDto.getEmail()) != null) {
 			throw new RuntimeException("Record already exists");
 		}
 
-		UserEntity userEntity = new UserEntity();
-		BeanUtils.copyProperties(user, userEntity);
+		userDto.getAddresses().forEach(address -> {
+			address.setUserDetails(userDto);
+			address.setAddressId(utils.generateId(25));
+		});
+
+		ModelMapper modelMapper = new ModelMapper();
+		UserEntity userEntity = modelMapper.map(userDto, UserEntity.class);
 
 		String publicUserId = utils.generateId(25);
 		userEntity.setUserId(publicUserId);
 
 		// This is how the password was encrypted before it's stored in the DB
-		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-		userEntity.setUserId(publicUserId);
+		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
 
 		UserEntity storedUserDetails = userRepository.save(userEntity);
 
-		UserDto returnValue = new UserDto();
-		BeanUtils.copyProperties(storedUserDetails, returnValue);
-
-		return returnValue;
+		return modelMapper.map(storedUserDetails, UserDto.class);
 	}
 
 	@Override public UserDto getUser(String email) {
@@ -73,19 +76,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override public UserDto getUserByUserId(String userId) {
-		UserDto returnValue = new UserDto();
-		UserEntity user = userRepository.findByUserId(userId);
+		ModelMapper modelMapper = new ModelMapper();
+		UserEntity userEntity = userRepository.findByUserId(userId);
 
-		if(user == null) {
+		if(userEntity == null) {
 			throw new UsernameNotFoundException("User with ID: " + userId + " not found!");
 		}
 
-		BeanUtils.copyProperties(user, returnValue);
-		return returnValue;
+		return modelMapper.map(userEntity, UserDto.class);
 	}
 
 	@Override public UserDto updateUser(String userId, UserDto user) {
-		UserDto returnValue = new UserDto();
+		ModelMapper modelMapper = new ModelMapper();
 		UserEntity userEntity = userRepository.findByUserId(userId);
 
 		if(userEntity == null) {
@@ -96,8 +98,7 @@ public class UserServiceImpl implements UserService {
 		userEntity.setLastName(user.getLastName());
 		userRepository.save(userEntity);
 
-		BeanUtils.copyProperties(userEntity, returnValue);
-		return returnValue;
+		return modelMapper.map(userEntity, UserDto.class);
 	}
 
 	@Override public void deleteUser(String userId) {
@@ -112,15 +113,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override public List<UserDto> getUsers(int page, int limit) {
 		List<UserDto> returnList = new ArrayList<>();
+		ModelMapper modelMapper = new ModelMapper();
 
 		Pageable pageableRequest = PageRequest.of(page, limit);
-
 		Page<UserEntity> userPage = userRepository.findAll(pageableRequest);
 		List<UserEntity> users = userPage.getContent();
 
 		users.forEach(user -> {
-			UserDto userDto = new UserDto();
-			BeanUtils.copyProperties(user, userDto);
+			UserDto userDto = modelMapper.map(user, UserDto.class);
 			returnList.add(userDto);
 		});
 
