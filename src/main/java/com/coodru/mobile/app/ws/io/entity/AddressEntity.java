@@ -34,7 +34,7 @@ public class AddressEntity implements Serializable {
 	private String type;
 
 	@ManyToOne
-	@JoinColumn(name = "users_id")	// this is the name of the FK of users table
+	@JoinColumn(name = "users_id")	// this is the name of the FK of users table, and the PK column name
 	private UserEntity userDetails;
 
 

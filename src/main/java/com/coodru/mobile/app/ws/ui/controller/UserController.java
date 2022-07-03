@@ -1,17 +1,21 @@
 package com.coodru.mobile.app.ws.ui.controller;
 
+import com.coodru.mobile.app.ws.service.AddressService;
 import com.coodru.mobile.app.ws.service.UserService;
 import com.coodru.mobile.app.ws.shared.RequestOperationName;
 import com.coodru.mobile.app.ws.shared.RequestOperationStatus;
+import com.coodru.mobile.app.ws.shared.dto.AddressDto;
 import com.coodru.mobile.app.ws.shared.dto.UserDto;
 import com.coodru.mobile.app.ws.ui.controller.model.request.UserDetailsRequestModel;
+import com.coodru.mobile.app.ws.ui.controller.model.response.AddressesRest;
 import com.coodru.mobile.app.ws.ui.controller.model.response.OperationStatusModel;
 import com.coodru.mobile.app.ws.ui.controller.model.response.UserRest;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
+import org.modelmapper.TypeToken;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +24,11 @@ import java.util.List;
 public class UserController {
 
 	private final UserService userService;
+	private final AddressService addressService;
 
-	public UserController(UserService userService) {
+	public UserController(UserService userService, AddressService addressService) {
 		this.userService = userService;
+		this.addressService = addressService;
 	}
 
 	@GetMapping(produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
@@ -95,5 +101,30 @@ public class UserController {
 		returnValue.setOperationName(RequestOperationName.DELETE.name());
 		returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
 		return returnValue;
+	}
+
+
+	@GetMapping(path = "/{id}/addresses",
+			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public List<AddressesRest> getUserAddresses(@PathVariable String id) {
+		List<AddressesRest> returnValue = new ArrayList<>();
+
+		List<AddressDto> addressesDto = addressService.getAddresses(id);
+
+		if (addressesDto != null && !addressesDto.isEmpty()) {
+			Type listType = new TypeToken<List<AddressesRest>>() {}.getType();
+			returnValue = new ModelMapper().map(addressesDto, listType);
+		}
+
+		return returnValue;
+	}
+
+	@GetMapping(path = "/{id}/addresses/{addressId}",
+			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public AddressesRest getUserAddress(@PathVariable String id, @PathVariable String addressId) {
+
+
+
+		return null;
 	}
 }
