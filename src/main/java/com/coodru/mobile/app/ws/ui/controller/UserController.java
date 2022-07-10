@@ -119,12 +119,14 @@ public class UserController {
 		return returnValue;
 	}
 
-	@GetMapping(path = "/{id}/addresses/{addressId}",
+	/*
+		Returns an address specific to a User
+	 */
+	@GetMapping(path = "/{userId}/addresses/{addressId}",
 			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	public AddressRest getUserAddress(@PathVariable String addressId, @PathVariable String id) {
-//		It works even without using the 'id' pathVariable
+	public AddressRest getUserAddress(@PathVariable String addressId, @PathVariable String userId) {
 
-		AddressDto addressDto = addressService.getAddress(addressId);
+		AddressDto addressDto = addressService.getAddress(addressId, userId);
 
 		return new ModelMapper().map(addressDto, AddressRest.class);
 	}

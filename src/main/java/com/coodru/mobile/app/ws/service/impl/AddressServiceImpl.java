@@ -40,14 +40,17 @@ public class AddressServiceImpl implements AddressService {
 		return returnList;
 	}
 
-	@Override public AddressDto getAddress(String addressId) {
+	@Override public AddressDto getAddress(String addressId, String userId) {
 		AddressDto returnValue = null;
 
-		AddressEntity address = addressRepository.findByAddressId(addressId);
+		UserEntity user = userRepository.findByUserId(userId);
+		if(user == null) {
+			throw new UsernameNotFoundException("User with ID: " + userId + " not found!");
+		}
 
+		AddressEntity address = addressRepository.findByAddressIdAndUserDetails(addressId, user);
 		if (address != null) {
 			returnValue = new ModelMapper().map(address, AddressDto.class);
-
 		}
 
 		return returnValue;
