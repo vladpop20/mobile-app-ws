@@ -121,8 +121,8 @@ public class UserController {
 
 	@GetMapping(path = "/{id}/addresses/{addressId}",
 			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	public AddressRest getUserAddress(@PathVariable String addressId) {
-//		@PathVariable String id
+	public AddressRest getUserAddress(@PathVariable String addressId, @PathVariable String id) {
+//		It works even without using the 'id' pathVariable
 
 		AddressDto addressDto = addressService.getAddress(addressId);
 
